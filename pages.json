@@ -1,0 +1,167 @@
+{
+	"easycom": {
+		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+	},
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/login",
+			"style": {
+				"navigationBarTitleText": "用户登录",
+				"disableScroll": false, // 禁止原生页面滚动, 解决Android小程序下拉卡顿的问题
+				"app-plus": {
+					"titleNView": false,
+					"bounce": "none" // 取消APP端iOS回弹,避免与下拉刷新冲突,以及bounce边缘1秒卡顿
+				}
+			}
+		},
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"disableScroll": false, // 禁止原生页面滚动, 解决Android小程序下拉卡顿的问题
+				"app-plus": {
+					"titleNView": false,
+					"bounce": "none" // 取消APP端iOS回弹,避免与下拉刷新冲突,以及bounce边缘1秒卡顿
+				}
+			}
+		},
+		{
+			"path": "pages/index/user",
+			"style": {
+				"navigationBarTitleText": "账户",
+				"disableScroll": false, // 禁止原生页面滚动, 解决Android小程序下拉卡顿的问题
+				"app-plus": {
+					"titleNView": false,
+					"bounce": "none" // 取消APP端iOS回弹,避免与下拉刷新冲突,以及bounce边缘1秒卡顿
+				}
+			}
+		},
+		{
+			"path": "pages/index/exchange",
+			"style": {
+				"navigationBarTitleText": "兑换",
+				"disableScroll": false, // 禁止原生页面滚动, 解决Android小程序下拉卡顿的问题
+				"app-plus": {
+					"titleNView": false,
+					"bounce": "none" // 取消APP端iOS回弹,避免与下拉刷新冲突,以及bounce边缘1秒卡顿
+				}
+			}
+		},
+		{
+			"path": "pages/index/pledge",
+			"style": {
+				"navigationBarTitleText": "质押",
+				"disableScroll": false, // 禁止原生页面滚动, 解决Android小程序下拉卡顿的问题
+				"app-plus": {
+					"titleNView": false,
+					"bounce": "none" // 取消APP端iOS回弹,避免与下拉刷新冲突,以及bounce边缘1秒卡顿
+				}
+			}
+		},
+		{
+			"path": "pages/index/pledgelist",
+			"style": {
+				"navigationBarTitleText": "质押列表",
+				"disableScroll": false, // 禁止原生页面滚动, 解决Android小程序下拉卡顿的问题
+				"app-plus": {
+					"titleNView": false,
+					"bounce": "none" // 取消APP端iOS回弹,避免与下拉刷新冲突,以及bounce边缘1秒卡顿
+				}
+			}
+		},
+		{
+			"path": "pages/index/recharge",
+			"style": {
+				"navigationBarTitleText": "充值",
+				"disableScroll": false, // 禁止原生页面滚动, 解决Android小程序下拉卡顿的问题
+				"app-plus": {
+					"titleNView": false,
+					"bounce": "none" // 取消APP端iOS回弹,避免与下拉刷新冲突,以及bounce边缘1秒卡顿
+				}
+			}
+		},
+		{
+			"path": "pages/index/pay",
+			"style": {
+				"navigationBarTitleText": "支付",
+				"disableScroll": false, // 禁止原生页面滚动, 解决Android小程序下拉卡顿的问题
+				"app-plus": {
+					"titleNView": false,
+					"bounce": "none" // 取消APP端iOS回弹,避免与下拉刷新冲突,以及bounce边缘1秒卡顿
+				}
+			}
+		},
+		{
+			"path": "pages/index/government",
+			"style": {
+				"navigationBarTitleText": "社区治理",
+				"disableScroll": false, // 禁止原生页面滚动, 解决Android小程序下拉卡顿的问题
+				"app-plus": {
+					"titleNView": false,
+					"bounce": "none" // 取消APP端iOS回弹,避免与下拉刷新冲突,以及bounce边缘1秒卡顿
+				}
+			}
+		},
+		{
+			"path": "pages/index/faucet",
+			"style": {
+				"navigationBarTitleText": "Faucet",
+				"disableScroll": false, // 禁止原生页面滚动, 解决Android小程序下拉卡顿的问题
+				"app-plus": {
+					"titleNView": false,
+					"bounce": "none" // 取消APP端iOS回弹,避免与下拉刷新冲突,以及bounce边缘1秒卡顿
+				}
+			}
+		},
+		{
+			"path": "pages/index/mintlist",
+			"style": {
+				"navigationBarTitleText": "MintList",
+				"disableScroll": false, // 禁止原生页面滚动, 解决Android小程序下拉卡顿的问题
+				"app-plus": {
+					"titleNView": false,
+					"bounce": "none" // 取消APP端iOS回弹,避免与下拉刷新冲突,以及bounce边缘1秒卡顿
+				}
+			}
+		},
+		{
+			"path": "pages/index/swap",
+			"style": {
+				"navigationBarTitleText": "Swap",
+				"disableScroll": false, // 禁止原生页面滚动, 解决Android小程序下拉卡顿的问题
+				"app-plus": {
+					"titleNView": false,
+					"bounce": "none" // 取消APP端iOS回弹,避免与下拉刷新冲突,以及bounce边缘1秒卡顿
+				}
+			}
+		},
+		{
+			"path": "pages/index/set",
+			"style": {
+				"navigationBarTitleText": "Set",
+				"disableScroll": false, // 禁止原生页面滚动, 解决Android小程序下拉卡顿的问题
+				"app-plus": {
+					"titleNView": false,
+					"bounce": "none" // 取消APP端iOS回弹,避免与下拉刷新冲突,以及bounce边缘1秒卡顿
+				}
+			}
+		},
+		{
+			"path": "pages/index/blockmint",
+			"style": {
+				"navigationBarTitleText": "节点质押",
+				"disableScroll": false, // 禁止原生页面滚动, 解决Android小程序下拉卡顿的问题
+				"app-plus": {
+					"titleNView": false,
+					"bounce": "none" // 取消APP端iOS回弹,避免与下拉刷新冲突,以及bounce边缘1秒卡顿
+				}
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "NFT",
+		"navigationBarBackgroundColor": "#130816",
+		"backgroundColor": "#130816"
+	}
+}
