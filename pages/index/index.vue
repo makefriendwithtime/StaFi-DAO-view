@@ -170,7 +170,7 @@
 		onShow() {
 			if(uni.getStorageSync('usertype')){
 				this.usertype = uni.getStorageSync('usertype')
-				console.log(this.usertype)
+				console.log(typeof this.usertype)
 			}
 		}
 	}

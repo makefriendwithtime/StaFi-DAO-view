@@ -207,7 +207,7 @@
 	.b-image image {
 		display: block;
 		width: 100%;
-		height: auto
+		height: auto; 
 	}
 
 	.r-btn {
