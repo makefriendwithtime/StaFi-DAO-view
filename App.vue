@@ -1,7 +1,6 @@
 <script>
 	export default {
 		onLaunch: function() {
-			console.log(this.Web3)
 			console.log('App Launch')
 		},
 		onShow: function() {
