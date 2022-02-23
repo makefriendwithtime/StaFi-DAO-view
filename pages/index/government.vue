@@ -14,7 +14,7 @@
 			</view>
 		</view>
 		<view class="exchang-btn" @click="mmshow = true">发起投票</view>
-		<u-action-sheet :actions="list" title="选择您的意向" :show="show" closeOnClickOverlay @select="selectClick"></u-action-sheet>
+		<u-action-sheet :actions="list" title="选择您的意向" :show="show" :closeOnClickOverlay="true" :closeOnClickAction="true" @select="selectClick" @close="close"></u-action-sheet>
 		<u-popup :show="mmshow" @close="mmshow = false" :round="10">
 			<view class="mms-main">
 				<text>投票描述：</text>
@@ -55,6 +55,9 @@
 
 		},
 		methods: {
+			close(){
+				this.show=false
+			},
 			mintNow(){
 				this.shows = true
 				this.content = '是否发起投票'
