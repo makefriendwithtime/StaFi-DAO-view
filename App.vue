@@ -1,4 +1,5 @@
 <script>
+	import Web3 from 'web3'
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')

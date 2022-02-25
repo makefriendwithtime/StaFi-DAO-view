@@ -1,13 +1,32 @@
 let Web3 = require("web3");
-// import testABI from "@/abi/test.json";
-const testABI = require("../../abi/test.json").default;
+const testABI = require("../abi/test.json");
 let web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
-console.log(testABI);
-// const web3 = new Web3(window.ethereum)
-web3.eth.getAccounts().then(console.log);
+let address = "0x6aB9b18785C465a097a2178475B5a1b584d74c52"; //合约地址
+// let account_one = web3.eth.accounts[0];//第一位账户
+// web3.eth.getAccounts(console.log);
+var myContract = new web3.eth.Contract(testABI, address, {
+  from: "0x1EDbd6d0beEC7c372AEeF8fc5d3b3706043e3B0B",
+  gasPrice: "20000000000",
+});
 
-// var myContractInstance = new web3.eth.Contract(contractABI, adderss, {
-//     from: '0x23FCB0E1DDbC821Bd26D5429BA13B7D5c96C0DE0',
-//     gasPrice: '100',
-// 	...
-// });
+async function getNum(contractObj, fromAddr) {
+  // var name = await myContract.methods
+  //   .getRoleAdmin(
+  //     "0x7465737400000000000000000000000000000000000000000000000000000000"
+  //   )
+  //   .call();
+  // console.log(name);
+  web3.eth.getAccounts(function (err, accounts) {
+    console.log(accounts);
+    myContract.methods
+      .getRoleAdmin(
+        "0x7465737400000000000000000000000000000000000000000000000000000000"
+      )
+      .send({ from: accounts[0], gas: 300000 }, function (error, res) {
+        console.log(res);
+      });
+  });
+}
+getNum();
+
+console.log(myContract.methods);
