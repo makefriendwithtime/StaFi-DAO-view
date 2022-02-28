@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "@openzeppelin/contracts": "^4.5.0",
+    "bignumber.js": "^9.0.2",
     "openzeppelin-solidity": "^4.5.0",
+    "truffle-contract": "^4.0.31",
     "uview-ui": "^2.0.19",
     "web3": "^1.7.0"
   },

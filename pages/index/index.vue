@@ -95,6 +95,7 @@
 </template>
 
 <script>
+	import getBalance from "../../methods/test.js"
 	export default {
 		data() {
 			return {
@@ -168,6 +169,10 @@
 			}
 		},
 		onShow() {
+			 let responseData = getBalance();
+			 responseData.then((res) => {
+				console.log(res)
+			})
 			if(uni.getStorageSync('usertype')){
 				this.usertype = uni.getStorageSync('usertype')
 				console.log(typeof this.usertype)
