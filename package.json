@@ -1,6 +1,9 @@
 {
   "dependencies": {
-    "uview-ui": "^2.0.19"
+    "@openzeppelin/contracts": "^4.5.0",
+    "openzeppelin-solidity": "^4.5.0",
+    "uview-ui": "^2.0.19",
+    "web3": "^1.7.0"
   },
   "devDependencies": {
     "node-sass": "^7.0.1"
