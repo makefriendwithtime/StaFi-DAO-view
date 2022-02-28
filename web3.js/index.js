@@ -9,24 +9,16 @@ var myContract = new web3.eth.Contract(testABI, address, {
   gasPrice: "20000000000",
 });
 
-async function getNum(contractObj, fromAddr) {
-  // var name = await myContract.methods
-  //   .getRoleAdmin(
-  //     "0x7465737400000000000000000000000000000000000000000000000000000000"
-  //   )
-  //   .call();
-  // console.log(name);
+async function getNum(mixed) {
   web3.eth.getAccounts(function (err, accounts) {
     console.log(accounts);
     myContract.methods
-      .getRoleAdmin(
-        "0x7465737400000000000000000000000000000000000000000000000000000000"
-      )
+      .getRoleAdmin(web3.utils.toHex(mixed))
       .send({ from: accounts[0], gas: 300000 }, function (error, res) {
         console.log(res);
       });
   });
 }
-getNum();
+getNum("lisi");
 
 console.log(myContract.methods);
