@@ -1,5 +1,7 @@
 import App from './App'
-
+// vuex
+import store from "./store";
+Vue.prototype.$store = store;
 // #ifndef VUE3
 import Vue from 'vue'
 Vue.config.productionTip = false
