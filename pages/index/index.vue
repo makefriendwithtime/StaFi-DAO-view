@@ -110,7 +110,7 @@
 </template>
 
 <script>
-import {getBalance} from "@/methods/test1.js";
+import { getBalance } from "../../methods/test1.js";
 export default {
   data() {
     return {
