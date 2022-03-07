@@ -10,6 +10,7 @@ export default new Vuex.Store({
   mutations: {
 	 updateAccs(state, val){//accs赋值
 		 state.accs = val;
+		 console.log(val)
 	 }
   },
   actions: {
