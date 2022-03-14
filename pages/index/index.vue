@@ -184,11 +184,11 @@ export default {
     },
   },
   onShow() {
-	  console.log(getBalance())
-    // let responseData = getBalance();
-    // responseData.then((res) => {
-    //   console.log(res);
-    // });
+	  // console.log(getBalance())
+    let responseData = getBalance();
+    responseData.then((res) => {
+      console.log(res);
+    });
     if (uni.getStorageSync("usertype")) {
       this.usertype = uni.getStorageSync("usertype");
       console.log(typeof this.usertype);

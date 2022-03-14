@@ -2,10 +2,11 @@
   "dependencies": {
     "@openzeppelin/contracts": "^4.5.0",
     "bignumber.js": "^9.0.2",
+    "ganache": "^7.0.3",
     "openzeppelin-solidity": "^4.5.0",
-    "truffle-contract": "^4.0.31",
+    "truffle-contract": "^3.0.4",
     "uview-ui": "^2.0.19",
-    "web3": "^1.7.0"
+    "web3": "^1.7.1"
   },
   "devDependencies": {
     "@types/node": "^17.0.21",
