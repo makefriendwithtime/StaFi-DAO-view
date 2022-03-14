@@ -183,12 +183,13 @@ export default {
       this.menushow = false;
     },
   },
-  onShow() {
-	  // console.log(getBalance())
-    let responseData = getBalance();
+  async onShow() {
+    let responseData =getBalance();
     responseData.then((res) => {
       console.log(res);
-    });
+    }).catch((err)=>{
+		console.log(err);
+	});
     if (uni.getStorageSync("usertype")) {
       this.usertype = uni.getStorageSync("usertype");
       console.log(typeof this.usertype);
