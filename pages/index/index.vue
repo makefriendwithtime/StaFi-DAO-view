@@ -49,20 +49,20 @@
     <!--数据统计-->
     <view class="data-count">
       <view class="dc-one">
-        <text>流动资金</text>
-        <label for="">88992USDT</label>
+        <text>节点总奖励</text>
+        <label for="">{{zongsuData}}USDT</label>
       </view>
       <view class="dc-one">
-        <text>质押产出</text>
-        <label for="">889USDT</label>
+        <text>账户余额</text>
+        <label for="">{{responseData}}USDT</label>
       </view>
       <view class="dc-one">
-        <text>OCToken</text>
-        <label for="">48261</label>
+        <text>抵押所占比例</text>
+        <label for="">{{dyzzbData}}</label>
       </view>
       <view class="dc-one">
-        <text>ECToken</text>
-        <label for="">2265</label>
+        <text>节点总抵押</text>
+        <label for="">{{jdzdyData}}USDT</label>
       </view>
     </view>
     <!--合作伙伴-->
@@ -110,13 +110,17 @@
 </template>
 
 <script>
-import { getBalance } from "../../methods/test1.js";
+import { getBalance,getTotalReward,getStakeProportion,getTotalStake } from "../../methods/test1.js";
 export default {
   data() {
     return {
       menushow: false,
       show: false,
       usertype: "",
+			zongsuData:'',
+			responseData:'',
+			dyzzbData:'',
+			jdzdyData:'',
     };
   },
   onLoad() {
@@ -186,10 +190,34 @@ export default {
   async onShow() {
     let responseData =getBalance();
     responseData.then((res) => {
+			this.responseData=res;
       console.log(res);
     }).catch((err)=>{
 		console.log(err);
 	});
+	
+	let zongsuData =getTotalReward();
+	  zongsuData.then((res) => {
+			this.zongsuData=res;
+	    console.log(res);
+	  }).catch((err)=>{
+		console.log(err);
+	});
+	let dyzzbData =getStakeProportion();
+	  dyzzbData.then((res) => {
+			this.dyzzbData=res;
+	    console.log(res);
+	  }).catch((err)=>{
+		console.log(err);
+	});
+	let jdzdyData =getTotalStake();
+	  jdzdyData.then((res) => {
+			this.jdzdyData=res;
+	    console.log(res);
+	  }).catch((err)=>{
+		console.log(err);
+	});
+
     if (uni.getStorageSync("usertype")) {
       this.usertype = uni.getStorageSync("usertype");
       console.log(typeof this.usertype);

@@ -25,6 +25,74 @@ export async function getBalance() {
 		
 	// });
 }
+export async function getTotalReward() {
+	//查看节点总奖励
+	let res = await contract.methods.getTotalReward().call({
+		from: $store.state.accs,
+		gas: 3141592
+	})
+	return res
+	// await contract.methods.getTotalReward().call({
+	// 	from: $store.state.accs,
+	// 	gas: 3141592
+	// }, function(error, result) {
+	// 	console.log(result)
+	// 	console.log(error)
+	// 	return result
+		
+	// });
+}
 
 
-
+export async function getStake() {
+	//查看抵押所占比例
+	let res = await contract.methods.getStake().call({
+		from: $store.state.accs,
+		gas: 3141592
+	})
+	return res
+	// await contract.methods.getStake().call({
+	// 	from: $store.state.accs,
+	// 	gas: 3141592
+	// }, function(error, result) {
+	// 	console.log(result)
+	// 	console.log(error)
+	// 	return result
+		
+	// });
+}
+export async function getStakeProportion() {
+	//查看抵押所占比例
+	let res = await contract.methods.getStakeProportion().call({
+		from: $store.state.accs,
+		gas: 3141592
+	})
+	return res
+	// await contract.methods.getStakeProportion().call({
+	// 	from: $store.state.accs,
+	// 	gas: 3141592
+	// }, function(error, result) {
+	// 	console.log(result)
+	// 	console.log(error)
+	// 	return result
+		
+	// });
+}
+//查看节点总抵押
+export async function getTotalStake() {
+	//查看节点总抵押
+	let res = await contract.methods.getTotalStake().call({
+		from: $store.state.accs,
+		gas: 3141592
+	})
+	return res
+	// await contract.methods.getTotalStake().call({
+	// 	from: $store.state.accs,
+	// 	gas: 3141592
+	// }, function(error, result) {
+	// 	console.log(result)
+	// 	console.log(error)
+	// 	return result
+		
+	// });
+}

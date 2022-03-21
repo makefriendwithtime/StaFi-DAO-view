@@ -8,7 +8,7 @@
 			<view class="ins-box">
 				<text>您的USDT</text>
 				<label for="">
-					<u-count-to :startVal="0" :endVal="500.5323" :decimals="4" color="rgba(255,255,255,.9)"
+					<u-count-to :startVal="0" :endVal="responseData" :decimals="4" color="rgba(255,255,255,.9)"
 						fontSize="38"></u-count-to>
 				</label>
 			</view>
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+	import { getStake } from "../../methods/test1.js";
 	export default {
 		data() {
 			return {
@@ -38,7 +39,8 @@
 				nftnum: null,
 				cardnum: '1',
 				max: null,
-				value: null
+				value: null,
+				responseData:'',
 			}
 		},
 		onLoad() {
@@ -65,7 +67,22 @@
 				uni.navigateTo({
 					url: '/pages/index/pledgelist'
 				})
-			}
+			},
+			async onShow() {
+			  let responseData =getStake();
+			  responseData.then((res) => {
+					this.responseData=res;
+			    console.log(res);
+			  }).catch((err)=>{
+				console.log(err);
+			});
+			
+			
+			  if (uni.getStorageSync("usertype")) {
+			    this.usertype = uni.getStorageSync("usertype");
+			    console.log(typeof this.usertype);
+			  }
+			},
 		}
 	}
 </script>
