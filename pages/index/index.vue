@@ -186,38 +186,50 @@ export default {
       });
       this.menushow = false;
     },
+	getBalance(){
+		let responseData =getBalance();
+		responseData.then((res) => {
+				this.responseData=res;
+		  console.log(res);
+		}).catch((err)=>{
+			console.log(err);
+		});
+	},
+	getTotalReward(){
+		let zongsuData =getTotalReward();
+		  zongsuData.then((res) => {
+				this.zongsuData=res;
+		    console.log(res);
+		  }).catch((err)=>{
+			console.log(err);
+		});
+	},
+	getStakeProportion(){
+		let dyzzbData =getStakeProportion();
+			  dyzzbData.then((res) => {
+					this.dyzzbData=res;
+			    console.log(res);
+			  }).catch((err)=>{
+				console.log(err);
+			});
+	},
+	getTotalStake(){
+		let jdzdyData =getTotalStake();
+		  jdzdyData.then((res) => {
+				this.jdzdyData=res;
+		    console.log(res);
+		  }).catch((err)=>{
+			console.log(err);
+		});
+	}
   },
   async onShow() {
-    let responseData =getBalance();
-    responseData.then((res) => {
-			this.responseData=res;
-      console.log(res);
-    }).catch((err)=>{
-		console.log(err);
-	});
-	
-	let zongsuData =getTotalReward();
-	  zongsuData.then((res) => {
-			this.zongsuData=res;
-	    console.log(res);
-	  }).catch((err)=>{
-		console.log(err);
-	});
-	let dyzzbData =getStakeProportion();
-	  dyzzbData.then((res) => {
-			this.dyzzbData=res;
-	    console.log(res);
-	  }).catch((err)=>{
-		console.log(err);
-	});
-	let jdzdyData =getTotalStake();
-	  jdzdyData.then((res) => {
-			this.jdzdyData=res;
-	    console.log(res);
-	  }).catch((err)=>{
-		console.log(err);
-	});
-
+	Promise.all([
+		this.getBalance(),
+		this.getTotalReward(),
+		this.getStakeProportion(),
+		this.getTotalStake(),
+	])
     if (uni.getStorageSync("usertype")) {
       this.usertype = uni.getStorageSync("usertype");
       console.log(typeof this.usertype);
