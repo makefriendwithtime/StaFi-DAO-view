@@ -45,7 +45,7 @@ export async function getTotalReward() {
 
 
 export async function getStake() {
-	//查看抵押所占比例
+	//查看抵押
 	let res = await contract.methods.getStake().call({
 		from: $store.state.accs,
 		gas: 3141592
