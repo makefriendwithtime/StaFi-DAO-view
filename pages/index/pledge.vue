@@ -6,7 +6,7 @@
 				<label for="" @click="toMy">Mint记录</label>
 			</view>
 			<view class="ins-box">
-				<text>您的USDT</text>
+				<text @click="get">您的USDT</text>
 				<label for="">
 					<u-count-to :startVal="0" :endVal="responseData" :decimals="4" color="rgba(255,255,255,.9)"
 						fontSize="38"></u-count-to>
@@ -27,11 +27,16 @@
 </template>
 
 <script>
-	import { getStake } from "../../methods/test1.js";
+	import Web3 from 'web3'
+	import adou from "@/contracts/AdouCollator.json";
+	import {
+		getStake,addStake
+	} from "../../methods/test1.js";
 	export default {
 		data() {
 			return {
-				mmshow:false,
+				myAccount:null,
+				mmshow: false,
 				numshow: false,
 				shows: false,
 				content: '',
@@ -40,26 +45,95 @@
 				cardnum: '1',
 				max: null,
 				value: null,
-				responseData:'',
+				responseData: '',
 			}
 		},
-		onLoad() {
-
+		async onLoad() {
+			new Promise((resolve, reject) => {
+                if (window.ethereum) {
+                        const web3 = new Web3(window.ethereum);
+                        try {
+                          // Request account access if needed
+                          window.ethereum.enable();
+                          // Acccounts now exposed
+                          resolve(web3);
+                        } catch (error) {
+                          reject(error);
+                        }
+                      }
+                      // Legacy dapp browsers...
+                      else if (window.web3) {
+                        // Use Mist/MetaMask's provider.
+                        const web3 = window.web3;
+                        console.log("Injected web3 detected.");
+                        resolve(web3);
+                      }
+                      // Fallback to localhost; use dev console port by default...
+                      else {
+                        const provider = new Web3.providers.HttpProvider(
+                          "http://127.0.0.1:9545"
+                        );
+                        const web3 = new Web3(provider);
+                        console.log("No web3 instance injected, using Local web3.");
+                        resolve(web3);
+                }
+			});	
+			window.web3 = new Web3(ethereum);
+			    var web3 = window.web3;
+			    // 请求用户授权 解决web3js无法直接唤起Meta Mask获取用户身份
+			    const enable = await ethereum.enable();
+			    console.log(enable,11)
 		},
 		methods: {
+			async get() {
+				web3.eth.getAccounts()
+				.then(console.log);
+				    // 授权获取账户
+				 //    var accounts = await web3.eth.getAccounts();
+					// console.log(accounts)
+				 //    // web3.eth.getAccounts().then((e)=>{console.log(e)})
+				 //    this.myAccount = accounts[0];				    //取第一个账户
+				 //    var account = accounts[1];//第二个账户
+				 //    console.log(account, 1);
+				 //    // 返回指定地址账户的余额
+				 //   web3.eth.getBalance(this.myAccount)
+				 //   .then(console.log);
+				 //   let value= web3.utils.toWei('1', 'ether')
+				 //   				 // var message = {from: myAccount, to:account, value:value, data: code};
+				   				
+				 //   				   web3.eth.sendTransaction({
+				 //   				       from: this.myAccount,
+				 //   				       to: account,
+				 //   				       value,
+					// 				   data:adou.abi
+				 //   				   })
+				 //   				   .then(function(res){
+				 //   				       console.log(res)
+				 //   				   }).catch(function(err){
+					// 				   console.log(err)
+					// 			   });
+			},
+
 			chooseNft(item) {
 				this.chooseid = item.id
 				this.nftnum = item.num
 				this.max = item.num
 			},
 			confirm() {
+				let responseData = addStake();
+				responseData.then((res) => {
+					this.responseData = res;
+					console.log(res);
+				}).catch((err) => {
+					console.log(err);
+				});
 				this.shows = false
 				this.$u.toast('Mint成功')
 			},
 			exBtn() {
 				this.mmshow = true
 			},
-			mintNow(){
+			mintNow() {
 				this.shows = true
 				this.content = '是否Mint输入的USDT，Mint期限为365天，中途不可取回，同意请确认'
 			},
@@ -69,19 +143,20 @@
 				})
 			},
 			async onShow() {
-			  let responseData =getStake();
-			  responseData.then((res) => {
-					this.responseData=res;
-			    console.log(res);
-			  }).catch((err)=>{
-				console.log(err);
-			});
-			
-			
-			  if (uni.getStorageSync("usertype")) {
-			    this.usertype = uni.getStorageSync("usertype");
-			    console.log(typeof this.usertype);
-			  }
+				this.get()
+				let responseData = getStake();
+				responseData.then((res) => {
+					this.responseData = res;
+					console.log(res);
+				}).catch((err) => {
+					console.log(err);
+				});
+
+
+				if (uni.getStorageSync("usertype")) {
+					this.usertype = uni.getStorageSync("usertype");
+					console.log(typeof this.usertype);
+				}
 			},
 		}
 	}
@@ -118,10 +193,42 @@
 		color: #7A318E;
 		padding: 5px 0 15px 0;
 	}
-	.mms-main{width: 90%; height:auto; overflow: hidden; padding: 8% 5%; text-align: center;}
-	.mms-main text{ display: block; font-size: 14px; color:#999}
-	.mms-main input{width: 60%; height:auto; overflow: hidden; background: #eee; padding: 10px 0; text-align: center; border-radius: 5px; margin: 20px auto;}
-	.mint-btn{width: 100%; height:auto; overflow: hidden; background: #333; color:#fff; border-radius: 10px; padding: 12px 0;}
+
+	.mms-main {
+		width: 90%;
+		height: auto;
+		overflow: hidden;
+		padding: 8% 5%;
+		text-align: center;
+	}
+
+	.mms-main text {
+		display: block;
+		font-size: 14px;
+		color: #999
+	}
+
+	.mms-main input {
+		width: 60%;
+		height: auto;
+		overflow: hidden;
+		background: #eee;
+		padding: 10px 0;
+		text-align: center;
+		border-radius: 5px;
+		margin: 20px auto;
+	}
+
+	.mint-btn {
+		width: 100%;
+		height: auto;
+		overflow: hidden;
+		background: #333;
+		color: #fff;
+		border-radius: 10px;
+		padding: 12px 0;
+	}
+
 	.num-main {
 		width: 90%;
 		height: auto;
@@ -224,7 +331,7 @@
 	.b-image image {
 		display: block;
 		width: 100%;
-		height: auto; 
+		height: auto;
 	}
 
 	.r-btn {

@@ -2,7 +2,13 @@
 	import Web3 from 'web3'
 	import $store from "@/store/index";
 	export default {
-		onLaunch: function() {
+		async onLaunch() {
+			
+		    window.web3 = new Web3(ethereum);
+		        var web3 = window.web3;
+		        // 请求用户授权 解决web3js无法直接唤起Meta Mask获取用户身份
+		        const enable = await ethereum.enable();
+		        console.log(enable,11)
 			if (typeof web3 !== 'undefined') {
 			    console.warn("Using web3 detected from external source. If you find that your accounts don't appear or you have 0 MetaCoin, ensure you've configured that source properly. If using MetaMask, see the following link. Feel free to delete this warning. :) http://truffleframework.com/tutorials/truffle-and-metamask")
 			    // Use Mist/MetaMask's provider
@@ -26,7 +32,7 @@
 				$store.commit('updateAccs',accs[0])
 			    ;//第一位账户
 			  });
-			  // console.log(window.web3)
+			  console.log(window.web3)
 		},
 		onShow: function() {
 			console.log('App Show')
