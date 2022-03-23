@@ -7,7 +7,6 @@ import adou from "../contracts/AdouCollator.json";
 let web3 = new Web3(new providers.HttpProvider("https://rpc.testnet.moonbeam.network"));
 const contract = new web3.eth.Contract(adou.abi, "0x6aB9b18785C465a097a2178475B5a1b584d74c52")
 
-
 export async function getBalance() {
 	//获取账户余额
 	let res = await contract.methods.getBalance().call({
@@ -95,4 +94,19 @@ export async function getTotalStake() {
 	// 	return result
 		
 	// });
+}
+export async function addStake() {
+	////节点抵押
+	// web3.eth.defaultAccount = $store.state.accs;
+	try{
+		let res = await contract.methods.addStake().send({
+			from: $store.state.accs,
+			gas: 3141592
+		})
+		return res
+	}catch(e){
+		console.log(e)
+	}
+	
+	
 }
