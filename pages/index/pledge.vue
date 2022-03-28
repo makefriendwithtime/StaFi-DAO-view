@@ -49,69 +49,56 @@
 			}
 		},
 		async onLoad() {
-			new Promise((resolve, reject) => {
-                if (window.ethereum) {
-                        const web3 = new Web3(window.ethereum);
-                        try {
-                          // Request account access if needed
-                          window.ethereum.enable();
-                          // Acccounts now exposed
-                          resolve(web3);
-                        } catch (error) {
-                          reject(error);
-                        }
-                      }
-                      // Legacy dapp browsers...
-                      else if (window.web3) {
-                        // Use Mist/MetaMask's provider.
-                        const web3 = window.web3;
-                        console.log("Injected web3 detected.");
-                        resolve(web3);
-                      }
-                      // Fallback to localhost; use dev console port by default...
-                      else {
-                        const provider = new Web3.providers.HttpProvider(
-                          "http://127.0.0.1:9545"
-                        );
-                        const web3 = new Web3(provider);
-                        console.log("No web3 instance injected, using Local web3.");
-                        resolve(web3);
-                }
-			});	
-			window.web3 = new Web3(ethereum);
-			    var web3 = window.web3;
-			    // 请求用户授权 解决web3js无法直接唤起Meta Mask获取用户身份
-			    const enable = await ethereum.enable();
-			    console.log(enable,11)
+			// new Promise((resolve, reject) => {
+   //              if (window.ethereum) {
+   //                      const web3 = new Web3(window.ethereum);
+   //                      try {
+   //                        // Request account access if needed
+   //                        window.ethereum.enable();
+   //                        // Acccounts now exposed
+   //                        resolve(web3);
+   //                      } catch (error) {
+   //                        reject(error);
+   //                      }
+   //                    }
+   //                    // Legacy dapp browsers...
+   //                    else if (window.web3) {
+   //                      // Use Mist/MetaMask's provider.
+   //                      const web3 = window.web3;
+   //                      console.log("Injected web3 detected.");
+   //                      resolve(web3);
+   //                    }
+   //                    // Fallback to localhost; use dev console port by default...
+   //                    else {
+   //                      const provider = new Web3.providers.HttpProvider(
+   //                        "http://127.0.0.1:9545"
+   //                      );
+   //                      const web3 = new Web3(provider);
+   //                      console.log("No web3 instance injected, using Local web3.");
+   //                      resolve(web3);
+   //              }
+			// });	
+			// window.web3 = new Web3(ethereum);
+			//     var web3 = window.web3;
+			//     // 请求用户授权 解决web3js无法直接唤起Meta Mask获取用户身份
+			//     const enable = await ethereum.enable();
+			//     console.log(enable,11)
 		},
 		methods: {
 			async get() {
-				web3.eth.getAccounts()
-				.then(console.log);
-				    // 授权获取账户
-				 //    var accounts = await web3.eth.getAccounts();
-					// console.log(accounts)
-				 //    // web3.eth.getAccounts().then((e)=>{console.log(e)})
-				 //    this.myAccount = accounts[0];				    //取第一个账户
-				 //    var account = accounts[1];//第二个账户
-				 //    console.log(account, 1);
-				 //    // 返回指定地址账户的余额
-				 //   web3.eth.getBalance(this.myAccount)
-				 //   .then(console.log);
-				 //   let value= web3.utils.toWei('1', 'ether')
-				 //   				 // var message = {from: myAccount, to:account, value:value, data: code};
+				
 				   				
-				 //   				   web3.eth.sendTransaction({
-				 //   				       from: this.myAccount,
-				 //   				       to: account,
-				 //   				       value,
-					// 				   data:adou.abi
-				 //   				   })
-				 //   				   .then(function(res){
-				 //   				       console.log(res)
-				 //   				   }).catch(function(err){
-					// 				   console.log(err)
-					// 			   });
+				   				//    web3.eth.sendTransaction({
+				   				//        from: this.myAccount,
+				   				//        to: account,
+				   				//        value,
+									  //  data:adou.abi
+				   				//    })
+				   				//    .then(function(res){
+				   				//        console.log(res)
+				   				//    }).catch(function(err){
+									  //  console.log(err)
+								   // });
 			},
 
 			chooseNft(item) {
@@ -144,13 +131,13 @@
 			},
 			async onShow() {
 				this.get()
-				let responseData = getStake();
-				responseData.then((res) => {
-					this.responseData = res;
-					console.log(res);
-				}).catch((err) => {
-					console.log(err);
-				});
+				// let responseData = getStake();
+				// responseData.then((res) => {
+				// 	this.responseData = res;
+				// 	console.log(res);
+				// }).catch((err) => {
+				// 	console.log(err);
+				// });
 
 
 				if (uni.getStorageSync("usertype")) {

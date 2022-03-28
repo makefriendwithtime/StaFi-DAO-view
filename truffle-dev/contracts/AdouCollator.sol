@@ -2,9 +2,9 @@
 pragma solidity ^0.8.0;
 import "./StakingInterface.sol";
 import "./AuthorMappingInterface.sol";
-import "openzeppelin-solidity/contracts/access/AccessControl.sol";
-import "openzeppelin-solidity/contracts/utils/math/SafeMath.sol";
-import "openzeppelin-solidity/contracts/utils/Address.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
 
 contract AdouCollator is AccessControl{
     using SafeMath for uint256;
@@ -31,6 +31,7 @@ contract AdouCollator is AccessControl{
         uint perInvestDownLimit;//每人次投资抵押下限
         uint rewardDownLimit;//最低分配奖励额度
         uint256 scheduleTime;//网络解绑时长
+        uint authorMappingLimit;//authorid映射绑定额度
     }
     NodeConfig private nodeConfig;
 
@@ -64,10 +65,10 @@ contract AdouCollator is AccessControl{
     uint256 private leaveTime;
     //合约sudo地址
     address private ownerAddress;
-    //质押奖励地址，奖励定时返回到合约进行自动分配
-    address private stakeRewardAddr;
     //默认单位长度
     uint private constant unitLength = 1000000000000000000;
+    //AuthorId奖励绑定标记
+    bool private associationFlag = false;
 
     constructor(uint _techProportion
                 ,uint _fundsDownLimit
@@ -75,13 +76,15 @@ contract AdouCollator is AccessControl{
                 ,uint256 _nodeStartDate
                 ,uint _rewardDownLimit
                 ,address _techRewardAddr
-                ,uint256 _scheduleTime) {
+                ,uint256 _scheduleTime
+                ,uint _authorMappingLimit) {
         nodeConfig.techProportion = _techProportion;
         nodeConfig.fundsDownLimit = _fundsDownLimit.mul(unitLength);
         nodeConfig.perInvestDownLimit =  _perInvestDownLimit.mul(unitLength);
         nodeConfig.rewardDownLimit = _rewardDownLimit.mul(unitLength);
         nodeStartDate = _nodeStartDate;
         nodeConfig.scheduleTime =  _scheduleTime;
+        nodeConfig.authorMappingLimit = _authorMappingLimit.mul(unitLength);
         ownerAddress = msg.sender;
         staking = ParachainStaking(precompileStakingAddr);
         authorMapping = AuthorMapping(precompileAuthorMappingAddr);
@@ -108,27 +111,31 @@ contract AdouCollator is AccessControl{
                 ,uint256 _nodeStartDate
                 ,uint _rewardDownLimit
                 ,address _techRewardAddr
-                ,uint256 _scheduleTime) public isOwner{
-        require(_techProportion >= techDownLimit,'_techProportion is illegal!');
+                ,uint256 _scheduleTime
+                ,uint _authorMappingLimit) public isOwner{
         require(!governanceFlag,'Node started!');
+        require(_techProportion >= techDownLimit,'_techProportion is illegal!');
+        if(memberAddrs[0] != _techRewardAddr){            
+            require(!hasRole(MEMBER, _techRewardAddr),'TechRewardAddr is not Member!');        
+            if(memberRedeems[memberAddrs[0]] > 0){
+                memberRedeems[_techRewardAddr] = memberRedeems[memberAddrs[0]];
+                memberRedeems[memberAddrs[0]] = 0;
+            }
+            _revokeRole(MEMBER,memberAddrs[0]);  
+            memberAddrs[0] = _techRewardAddr;             
+            _setupRole(MEMBER, _techRewardAddr);
+        }
         nodeConfig.techProportion = _techProportion;
         nodeConfig.fundsDownLimit = _fundsDownLimit.mul(unitLength);
         nodeConfig.perInvestDownLimit =  _perInvestDownLimit.mul(unitLength);
         nodeConfig.rewardDownLimit = _rewardDownLimit.mul(unitLength);
         nodeStartDate = _nodeStartDate;
         nodeConfig.scheduleTime = _scheduleTime;
-        if(memberAddrs[0] != _techRewardAddr){
-            if(memberStakes[memberAddrs[0]] == 0 && memberRedeems[memberAddrs[0]] == 0){
-                _revokeRole(MEMBER,memberAddrs[0]);
-            }                  
-            _setupRole(MEMBER, _techRewardAddr);
-        }
-        memberAddrs[0] = _techRewardAddr; 
+        nodeConfig.authorMappingLimit = _authorMappingLimit.mul(unitLength);
     }
 
     //分配当前奖励
     function _assign(uint256 newReward) private{
-        require(totalStake > 0 ,'TotalStake is illegal!');
         uint256 stakeReward = newReward.sub(newReward.mul(nodeConfig.techProportion).div(100));
         for(uint i = 1; i < memberTotal; i++){
             address ra = memberAddrs[i];
@@ -144,7 +151,7 @@ contract AdouCollator is AccessControl{
         memberRewards[ta] = memberRewards[ta].add(newReward);
     }
 
-    //节点解散
+    //节点计划解散
     function scheduleLeaveStake() public isOwner{
         //从收集节点计划赎回抵押
         require(governanceFlag,'Node not started!');
@@ -153,8 +160,8 @@ contract AdouCollator is AccessControl{
         staking.schedule_leave_candidates(staking.candidate_count());
     }
 
-    //节点解散,定时器触发使用sudo
-    function executeLeaveStake() public isOwner{
+    //节点执行解散
+    function executeLeaveStake() public{
         require(leaveTime > 0 && (leaveTime + nodeConfig.scheduleTime) < block.timestamp, 'LeaveTime is not up!');
         //从收集节点赎回抵押
         staking.execute_leave_candidates(address(this),staking.candidate_delegation_count(address(this)));
@@ -162,18 +169,20 @@ contract AdouCollator is AccessControl{
         redeemConfig.bondLess = 0;
         redeemConfig.bondLessAddr = address(0);        
         redeemConfig.bondLessTime = 0;
+        //存在未分配奖励        
+        if((address(this).balance) - pendingReward > totalStake){
+            uint256 newReward = (address(this).balance).sub(pendingReward).sub(totalStake);
+            totalReward = totalReward.add(newReward);
+            _assign(newReward);
+        }
+        pendingReward = address(this).balance;
+        //抵押转入赎回
         for(uint i = 1; i < memberTotal; i++){
             address ra = memberAddrs[i];
             if(memberStakes[ra] > 0){
                 memberRedeems[ra] = memberRedeems[ra].add(memberStakes[ra]);
                 memberStakes[ra] = 0;
             }
-        }
-        //存在未分配奖励
-        uint256 newReward = (address(this).balance).sub(pendingReward);
-        if(newReward > 0){
-            pendingReward = address(this).balance;
-            _assign(newReward);
         }
         memberTotal = 1;
         totalReward = 0;
@@ -197,29 +206,13 @@ contract AdouCollator is AccessControl{
         totalStake = totalStake.add(msg.value);        
     }
 
-    //增加节点抵押000000000000000000
+    //增加节点抵押
     function addMoreStake() external payable onlyRole(MEMBER){
         require(msg.sender != memberAddrs[0],'StakeAddr is tech!');
         require(governanceFlag,'Node not started!');
         memberStakes[msg.sender] = memberStakes[msg.sender].add(msg.value);
         totalStake = totalStake.add(msg.value);
         staking.candidate_bond_more(msg.value);
-    }
-
-    //重开节点赎回重新抵押
-    function reStakeRedeem() public onlyRole(MEMBER){
-        require(msg.sender != memberAddrs[0],'StakeAddr is tech!');
-        require(block.timestamp < nodeStartDate,'StakeTime is expired!');
-        require(memberRedeems[msg.sender] > 0,'MemberRedeems is illegal!');
-        uint256 reddeem = memberRedeems[msg.sender];
-        require(pendingReward - reddeem >= 0,'PendingReward not enough!');
-        pendingReward = pendingReward.sub(reddeem);
-        memberRedeems[msg.sender] = 0;
-        memberStakes[msg.sender] = memberStakes[msg.sender].add(reddeem);
-        totalStake = totalStake.add(reddeem);
-        memberAddrs[memberTotal] = msg.sender;
-        memberTotal = memberTotal.add(1);
-        memberReal = memberReal.add(1);
     }
 
     //计划赎回节点抵押，同一时间段只能赎回一次,amount默认为wei
@@ -235,8 +228,8 @@ contract AdouCollator is AccessControl{
         staking.schedule_candidate_bond_less(amount);
     }
 
-    //赎回节点抵押,定时器触发使用sudo
-    function executeRedeemStake() public isOwner{
+    //赎回节点抵押
+    function executeRedeemStake() public {
         require(redeemConfig.bondLessTime > 0 && (redeemConfig.bondLessTime + nodeConfig.scheduleTime) < block.timestamp, 'BondLessTime is not up!');
         staking.execute_candidate_bond_less(address(this));
         pendingReward = pendingReward.add(redeemConfig.bondLess);
@@ -251,8 +244,8 @@ contract AdouCollator is AccessControl{
         redeemConfig.bondLessTime = 0;
     }
 
-    //节点开启（关闭抵押）,定时器触发使用sudo
-    function start() public isOwner{
+    //节点开启（关闭抵押）
+    function start() public{
         require(!governanceFlag,'Node started!');
         require(block.timestamp >= nodeStartDate && nodeStartDate > 0,'Node not started!');
         require(address(this).balance >= totalStake && totalStake >= nodeConfig.fundsDownLimit ,'TotalStake is illegal!');
@@ -262,20 +255,40 @@ contract AdouCollator is AccessControl{
     }
 
     //添加NimbusId，用于绑定钱包奖励
-    function addAssociation(bytes32 nimbusId) public isOwner{
+    function addAssociation(bytes32 nimbusId) external payable isOwner{
         require(governanceFlag,'Node not started!');
+        require(msg.value == nodeConfig.authorMappingLimit,'authorMappingLimit is illegal');
         authorMapping.add_association(nimbusId);
+        associationFlag = true;
     }
 
     //更新NimbusId
     function updateAssociation(bytes32 oldNimbusId,bytes32 newNimbusId) public isOwner{
-        require(governanceFlag,'Node not started!');
+        require(associationFlag,'Association not binded!');
         authorMapping.update_association(oldNimbusId,newNimbusId);
     }
 
-    //节点众贷失败解散,定时器触发使用sudo
-    function failBackStake() public isOwner{
+    //清除NimbusId
+    function clearAssociation(bytes32 nimbusId) public isOwner{
+        require(associationFlag,'Association not binded!');
         require(!governanceFlag,'Node started!');
+        require(leaveTime == 0,'Node disbanding!');
+        authorMapping.clear_association(nimbusId);
+        associationFlag = false;
+    }
+
+    //赎回authorid映射绑定
+    function redemmAssociation(address payable account) public isOwner{
+        require(!associationFlag,'Association binded!');
+        require(address(this).balance - pendingReward >= nodeConfig.authorMappingLimit ,'balance not enough!');
+        Address.sendValue(account, nodeConfig.authorMappingLimit);
+    }
+
+    //节点众贷失败解散
+    function failBackStake() public{
+        require(!governanceFlag,'Node started!');
+        require(leaveTime == 0,'Node disbanding!');
+        require(memberTotal > 1,'memberTotal is illegal!');
         require(block.timestamp >= nodeStartDate && nodeStartDate > 0,'Node not started!');
         require(totalStake < nodeConfig.fundsDownLimit ,'TotalStake is illegal!');
         for(uint i = 1; i < memberTotal; i++){
@@ -285,7 +298,7 @@ contract AdouCollator is AccessControl{
                 memberStakes[ra] = 0;
             }
         }
-        pendingReward = pendingReward.add(totalStake);
+        pendingReward = address(this).balance;
         memberTotal = 1;
         totalReward = 0;
         memberReal = 0;
@@ -308,11 +321,12 @@ contract AdouCollator is AccessControl{
         Address.sendValue(account, reddeem);        
     }
 
-    //奖励分配,定时器触发使用sudo
-    function assignRewards() public isOwner{
-        require(governanceFlag,'Node not started!');
+    //奖励分配
+    function assignRewards() public{
+        require(associationFlag,'Association not binded!');
+        // require(redeemConfig.bondLessAddr == address(0),'Scheduling!');
+        require((address(this).balance) - pendingReward >= nodeConfig.rewardDownLimit,'Balance not enough!');
         uint256 newReward = (address(this).balance).sub(pendingReward);
-        require(newReward >= nodeConfig.rewardDownLimit,'NewReward not enough!');
         pendingReward = address(this).balance;
         totalReward = totalReward.add(newReward);
         _assign(newReward);
@@ -320,17 +334,17 @@ contract AdouCollator is AccessControl{
 
     //抵押转让
     function fundsTransfer(address account) public onlyRole(MEMBER){
-        require(msg.sender != account && account != address(0),'Account is illegal!');
+        require(account != memberAddrs[0] && msg.sender != account && account != address(0),'Account is illegal!');
         require(memberStakes[msg.sender] > 0,'No stake!');
         if(!hasRole(MEMBER, account)){
             memberAddrs[memberTotal] = account;
             memberTotal = memberTotal.add(1);
+            memberReal = memberReal.add(1);
             _setupRole(MEMBER, account);
-        }else{
-            memberReal = memberReal.sub(1);
         }
         memberStakes[account] = memberStakes[account].add(memberStakes[msg.sender]);
         memberStakes[msg.sender] = 0;
+        memberReal = memberReal.sub(1);
         if(memberRedeems[msg.sender] == 0){
             _revokeRole(MEMBER,msg.sender);
         }
@@ -394,6 +408,17 @@ contract AdouCollator is AccessControl{
     //查看节点成员人数
     function getMemberReal() public view returns(uint){
         return memberReal;
+    }
+    
+
+    //查看节点历史成员总人数
+    function getMemberTotal() public view returns(uint){
+        return memberTotal;
+    }
+
+    //根据索引查看节点成员地址
+    function getMemberByIndex(uint _index) public view returns(address){
+        return memberAddrs[_index];
     }
 
     //查看节点开启日期
