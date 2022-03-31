@@ -16,9 +16,9 @@
 		<view class="exchang-btn" @click="exBtn">一键Mint</view>
 		<u-popup :show="mmshow" @close="mmshow = false" :round="10">
 			<view class="mms-main">
-				<text>- 请输入Mint数量 -</text>
-				<input type="text" placeholder="输入数量">
-				<view class="mint-btn" @click="mintNow">立即Mint</view>
+				<text>- 请输入Stake数量 -</text>
+				<input type="text" placeholder="输入数量" v-model="amount">
+				<view class="mint-btn" @click="mintNow">立即Stake</view>
 			</view>
 		</u-popup>
 		<u-modal :show="shows" title="提示" :content="content" showCancelButton @cancel="shows = false" @confirm="confirm"
@@ -30,7 +30,7 @@
 	import Web3 from 'web3'
 	import adou from "@/contracts/AdouCollator.json";
 	import {
-		getStake,addStake
+		getStake
 	} from "../../methods/test1.js";
 	export default {
 		data() {
@@ -46,6 +46,7 @@
 				max: null,
 				value: null,
 				responseData: '',
+				amount:'',
 			}
 		},
 		async onLoad() {
@@ -107,9 +108,12 @@
 				this.max = item.num
 			},
 			confirm() {
-				let responseData = addStake();
+				console.log(this.amount)
+				let responseData = addStake(this.amount);
 				responseData.then((res) => {
+				
 					this.responseData = res;
+					
 					console.log(res);
 				}).catch((err) => {
 					console.log(err);

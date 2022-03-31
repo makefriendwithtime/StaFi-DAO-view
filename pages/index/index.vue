@@ -13,6 +13,7 @@
 			<view class="mm-one" @click="toUser">钱包</view>
 			<view class="mm-one" @click="toDui">Swap</view>
 			<view class="mm-one" @click="toGover">社区治理</view>
+			<view class="mm-one" @click="tomine">我的</view>
 			<view class="mm-one" @click="loginOut">退出</view>
 		</view>
 		<view v-else-if="usertype == '654321'" :class="menushow ? 'more-menu showm' : 'more-menu'">
@@ -131,6 +132,12 @@
 			toUser() {
 				uni.navigateTo({
 					url: "/pages/index/user",
+				});
+				this.menushow = false;
+			},
+			tomine() {
+				uni.navigateTo({
+					url: "/pages/index/mine",
 				});
 				this.menushow = false;
 			},
