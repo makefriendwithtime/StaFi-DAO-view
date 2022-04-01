@@ -103,7 +103,7 @@
 		getTotalReward,
 		getStakeProportion,
 		getTotalStake
-	} from "../../methods/test1.js";
+	} from "../../methods/index.js";
 	export default {
 		data() {
 			return {

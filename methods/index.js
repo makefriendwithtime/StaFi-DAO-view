@@ -6,7 +6,7 @@ import Web3_, {
 import adou from "../contracts/AdouCollator.json";
 let web3 ;
 let web3_= new Web3(new providers.HttpProvider("https://rpc.testnet.moonbeam.network"));
-let myContract = new web3_.eth.Contract(adou.abi, "0x531a48659Cf2AF1067E8D03e9d14c5DA2d19D9EB")
+let myContract = new web3_.eth.Contract(adou.abi, $store.state.contractAddress)
 export async function addStake(val) {
 	if (window.ethereum) {
 		try {
@@ -20,37 +20,28 @@ export async function addStake(val) {
 	} else {
 		alert("Please install wallet");
 	}
-    const contract = new web3.eth.Contract(adou.abi, "0x531a48659Cf2AF1067E8D03e9d14c5DA2d19D9EB")
+    const contract = new web3.eth.Contract(adou.abi, $store.state.contractAddress)
 	web3.eth.getBalance($store.state.accs)
 		.then(console.log);
-	var chainId = await web3.eth.getChainId();
-	var amount = 1+"";
-	var transferData = contract.methods.addStake().encodeABI();
+	let chainId = await web3.eth.getChainId();
+	let amount = 1+"";
+	let transferData = contract.methods.addStake().encodeABI();
 	console.log(transferData)
 	console.log("1")
-	// var estimateGasRes=await web3.eth.estimateGas({from:$store.state.accs, to: "0x531a48659Cf2AF1067E8D03e9d14c5DA2d19D9EB", value: web3.utils.toWei("1")})
+	// let estimateGasRes=await web3.eth.estimateGas({from:$store.state.accs, to: "0x531a48659Cf2AF1067E8D03e9d14c5DA2d19D9EB", value: web3.utils.toWei("1")})
 	// console.log(estimateGasRes)
-
-	console.log("2")
-	var gasPrice = await web3.eth.getGasPrice();
-	console.log("3", gasPrice)
-
-	//计算交易手续费TxFee
-	// let fee = estimateGasRes*gasPrice
-	// let gass=parseInt(fee) + parseInt(web3.utils.toWei("1","ether"))
-	// console.log(gass)
-	let nonce = await web3.eth.getTransactionCount('0x531a48659Cf2AF1067E8D03e9d14c5DA2d19D9EB');
+	let gasPrice = await web3.eth.getGasPrice();
+	let nonce = await web3.eth.getTransactionCount($store.state.contractAddress);
 	console.log("4", nonce)
-	var estimateGasRes = await web3.eth.estimateGas({
-		to: '0x531a48659Cf2AF1067E8D03e9d14c5DA2d19D9EB',
+	let estimateGasRes = await web3.eth.estimateGas({
+		to: $store.state.contractAddress,
 		data: transferData,
 		from: $store.state.accs,
-		// value: amount
 		value: web3.utils.toWei(amount)
 	});
 	let rawTransaction = {
 		from: $store.state.accs,
-		to: "0x531a48659Cf2AF1067E8D03e9d14c5DA2d19D9EB",
+		to: $store.state.contractAddress,
 		nonce: web3.utils.toHex(nonce),
 		gasPrice: gasPrice,
 		// gas: estimateGasRes * 2,
@@ -59,13 +50,15 @@ export async function addStake(val) {
 		data: transferData,
 		// chainId: 1287
 	}
-	
 	web3.eth.sendTransaction(rawTransaction).on("transactionHash", function(hash) {
 		console.log(hash)
 	}).on('error', console.error);
 	
 	
-	
+	//计算交易手续费TxFee
+	// let fee = estimateGasRes*gasPrice
+	// let gass=parseInt(fee) + parseInt(web3.utils.toWei("1","ether"))
+	// console.log(gass)
 	// const txObject = {
 	// 		nonce: web3.utils.toHex(nonce*10),
 	// 		to: $store.state.accs,
@@ -153,6 +146,6 @@ export async function getTotalStake() {
 		from: $store.state.accs,
 		gas: 3141592
 	})
-	return res
+	return res 
 
 }
