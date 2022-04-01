@@ -14,6 +14,7 @@
 			<view class="mm-one" @click="toDui">Swap</view>
 			<view class="mm-one" @click="toGover">社区治理</view>
 			<view class="mm-one" @click="tomine">我的</view>
+			<view class="mm-one" @click="sudo">sudo权限</view>
 			<view class="mm-one" @click="loginOut">退出</view>
 		</view>
 		<view v-else-if="usertype == '654321'" :class="menushow ? 'more-menu showm' : 'more-menu'">
@@ -128,6 +129,11 @@
 					this.menushow = false;
 				}
 				console.log(this.menushow);
+			},
+			sudo(){
+				uni.navigateTo({
+					url:"/pages/index/sudoJurisdiction"
+				})
 			},
 			toUser() {
 				uni.navigateTo({

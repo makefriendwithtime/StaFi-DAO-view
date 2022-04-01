@@ -6,7 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     accs: "", //第一位账户
-    contractAddress: "0x531a48659Cf2AF1067E8D03e9d14c5DA2d19D9EB", //合约地址
+    contractAddress: "0x60F2375e985C819c809B53d36eba3C4f83c22415", //合约地址
   },
   mutations: {
     updateAccs(state, val) {
