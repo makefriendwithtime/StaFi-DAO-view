@@ -35,7 +35,7 @@
 	import adou from "@/contracts/AdouCollator.json";
 	import {
 		getStake,getTotalStake,getStakeProportion
-	} from "../../methods/test1.js";
+	} from "../../methods/index.js";
 	export default {
 		data() {
 			return {
