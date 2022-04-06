@@ -133,7 +133,6 @@ export async function sudo({
 }
 
 export async function getBalance() {
-	console.log(myContract);
 	//获取账户余额
 	let res = await myContract.methods.getBalance().call({
 		from: $store.state.accs,

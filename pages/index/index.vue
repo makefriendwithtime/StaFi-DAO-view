@@ -106,6 +106,7 @@
 		getStakeProportion,
 		getTotalStake
 	} from "../../methods/index.js";
+	import Web3 from 'web3'; //ipone without card
 	export default {
 		data() {
 			return {
@@ -120,8 +121,29 @@
 		},
 		onLoad() {
 			this.menushow = false;
+			ethereum.chainId!="0x507" && this.addNetwork()
 		},
 		methods: {
+			addNetwork(){//切换网络到1287
+				window.ethereum.request({//更换网络
+				    method: 'wallet_addEthereumChain', // Metamask的api名称
+				    params: [{
+				        chainId: "0x507", // 网络id，16进制的字符串
+				        chainName: "1287", // 添加到钱包后显示的网络名称
+				        rpcUrls: [
+				            'https://rpc.testnet.moonbeam.network', // rpc地址
+				        ],
+				        blockExplorerUrls: [
+				            'https://rpc.testnet.moonbeam.network' // 网络对应的区块浏览器
+				        ],
+				        nativeCurrency: {  // 网络主币的信息
+				            name: 'HT',
+				            symbol: 'HT',
+				            decimals: 18
+				        }
+				    }]
+				})
+			},
 			showMenu() {
 				if (!this.menushow) {
 					this.menushow = true;
@@ -130,9 +152,9 @@
 				}
 				console.log(this.menushow);
 			},
-			sudo(){
+			sudo() {
 				uni.navigateTo({
-					url:"/pages/index/sudoJurisdiction"
+					url: "/pages/index/sudoJurisdiction"
 				})
 			},
 			toUser() {
@@ -238,7 +260,6 @@
 			])
 			if (uni.getStorageSync("usertype")) {
 				this.usertype = uni.getStorageSync("usertype");
-				console.log(typeof this.usertype);
 			}
 		},
 	};
