@@ -114,7 +114,23 @@ export async function getTotalReward() {
   });
   return res;
 }
+export async function getPendingReward() {
+  //查看节点待领取奖励
+  let res = await myContract.methods.getPendingReward().call({
+    from: $store.state.accs,
+    gas: 3141592,
+  });
+  return res;
+}
 
+export async function getAnnualReward() {
+  //查看年化奖励
+  let res = await myContract.methods.getAnnualReward().call({
+    from: $store.state.accs,
+    gas: 3141592,
+  });
+  return res;
+}
 export async function getStake() {
   //查看抵押
   let res = await myContract.methods.getStake().call({
@@ -135,6 +151,22 @@ export async function getStakeProportion() {
 export async function getTotalStake() {
   //查看节点总抵押
   let res = await myContract.methods.getTotalStake().call({
+    from: $store.state.accs,
+    gas: 3141592,
+  });
+  return res;
+}
+export async function getMemberReal() {
+  //查看节点成员人数
+  let res = await myContract.methods.getMemberReal().call({
+    from: $store.state.accs,
+    gas: 3141592,
+  });
+  return res;
+}
+export async function getMemberTotal() {
+   //查看节点历史成员总人数
+  let res = await myContract.methods.getMemberTotal().call({
     from: $store.state.accs,
     gas: 3141592,
   });

@@ -21,6 +21,55 @@
 				<label for="">抵押所占比例</label>
 				<b>{{dyzzbData}}</b>
 			</view>
+			
+		<!-- 	<view>
+				<image src="../../static/logos.png" mode="widthFix"></image>
+				<label for="">ECToken</label>
+				<b>802.66</b>
+			</view> -->
+		</view>
+		<view class="in-step">
+			<view class="title">节点总奖励</view>
+			<view class="ins-box">
+				<!-- <text class="iconfont icon-USDT"></text> -->
+				<label for="">{{jdzjlData}}</label>
+				<!-- <b @click="recharge">充值USDT</b> -->
+			</view>
+		</view>
+		<view class="wallet-address">
+			<view>
+				<!-- <text class="iconfont icon-USDT"></text> -->
+				<label for="">节点待领取奖励</label>
+				<b>{{jddlqjlData}}</b>
+			</view>
+			<view>
+				<!-- <image src="../../static/logos.png" mode="widthFix"></image> -->
+				<label for="">年化奖励</label>
+				<b>{{nhjlData}}</b>
+			</view>
+			
+		<!-- 	<view>
+				<image src="../../static/logos.png" mode="widthFix"></image>
+				<label for="">ECToken</label>
+				<b>802.66</b>
+			</view> -->
+		</view>
+		<view class="in-step">
+			<view class="title">节点成员人数</view>
+			<view class="ins-box">
+				<!-- <text class="iconfont icon-USDT"></text> -->
+				<label for="">{{jdcyrsData}}</label>
+				<!-- <b @click="recharge">充值USDT</b> -->
+			</view>
+		</view>
+		<view class="wallet-address">
+			<view>
+				<!-- <text class="iconfont icon-USDT"></text> -->
+				<label for="">节点历史成员总人数</label>
+				<b>{{jdlscyzsData}}</b>
+			</view>
+		
+			
 		<!-- 	<view>
 				<image src="../../static/logos.png" mode="widthFix"></image>
 				<label for="">ECToken</label>
@@ -34,7 +83,8 @@
 	import Web3 from 'web3'
 	import adou from "@/contracts/AdouCollator.json";
 	import {
-		getStake,getTotalStake,getStakeProportion
+		getStake,getTotalStake,getStakeProportion,getTotalReward,getPendingReward,
+		getAnnualReward,getMemberReal,getMemberTotal,
 	} from "../../methods/index.js";
 	export default {
 		data() {
@@ -42,6 +92,11 @@
 					zdyData: '',
 				jdzdyData: '',
 				dyzzbData:'',
+				jdzjlData:'',
+				jddlqjlData:'',
+				nhjlData:'',
+				jdcyrsData:'',
+				jdlscyzsData:'',
 			}
 		},
 		onLoad() {
@@ -80,11 +135,61 @@
 					console.log(err);
 				});
 			},
+			getTotalReward() {
+				let jdzjlData = getTotalReward();
+				jdzjlData.then((res) => {
+					this.jdzjlData = res;
+					console.log(res);
+				}).catch((err) => {
+					console.log(err);
+				});
+			},
+			getPendingReward() {
+				let jddlqjlData = getPendingReward();
+				jddlqjlData.then((res) => {
+					this.jddlqjlData = res;
+					console.log(res);
+				}).catch((err) => {
+					console.log(err);
+				});
+			},
+			getAnnualReward() {
+				let nhjlData = getAnnualReward();
+				nhjlData.then((res) => {
+					this.nhjlData = res;
+					console.log(res);
+				}).catch((err) => {
+					console.log(err);
+				});
+			},
+			getMemberReal() {
+				let jdcyrsData = getMemberReal();
+				jdcyrsData.then((res) => {
+					this.jdcyrsData = res;
+					console.log(res);
+				}).catch((err) => {
+					console.log(err);
+				});
+			},
+			getMemberTotal() {
+				let jdlscyzsData = getMemberTotal();
+				jdlscyzsData.then((res) => {
+					this.jdlscyzsData = res;
+					console.log(res);
+				}).catch((err) => {
+					console.log(err);
+				});
+			},
 			async onShow() {
 				Promise.all([
 				this.getStake(),
 				this.getTotalStake(),
 				this.getStakeProportion(),
+					this.getTotalReward(),
+					this.getPendingReward(),
+						this.getAnnualReward(),
+						this.getMemberReal(),
+						this.getMemberTotal(),
 				])
 				if (uni.getStorageSync("usertype")) {
 					this.usertype = uni.getStorageSync("usertype");
