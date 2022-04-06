@@ -168,7 +168,19 @@
 					"bounce": "none" // 取消APP端iOS回弹,避免与下拉刷新冲突,以及bounce边缘1秒卡顿
 				}
 			}
+		},
+		{
+			"path": "pages/index/sudoJurisdiction",
+			"style": {
+				"navigationBarTitleText": "sudo权限",
+				"disableScroll": false, // 禁止原生页面滚动, 解决Android小程序下拉卡顿的问题
+				"app-plus": {
+					"titleNView": false,
+					"bounce": "none" // 取消APP端iOS回弹,避免与下拉刷新冲突,以及bounce边缘1秒卡顿
+				}
+			}
 		}
+		
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
