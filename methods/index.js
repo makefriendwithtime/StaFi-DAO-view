@@ -215,3 +215,40 @@ export async function getMemberTotal() {
   });
   return res;
 }
+
+export async function getRedeem() {
+   //查看赎回
+  let res = await myContract.methods.getRedeem().call({
+    from: $store.state.accs,
+    gas: 3141592,
+  });
+  return res;
+}
+
+export async function executeRedeemStake() {
+   //赎回节点抵押
+  let res = await myContract.methods.executeRedeemStake().call({
+    from: $store.state.accs,
+    gas: 3141592,
+  });
+  return res;
+}
+
+
+export async function scheduleLeaveStake() {
+   //节点计划解散
+  let res = await myContract.methods.scheduleLeaveStake().call({
+    from: $store.state.accs,
+    gas: 3141592,
+  });
+  return res;
+}
+
+export async function executeLeaveStake() {
+   //节点执行解散
+  let res = await myContract.methods.executeLeaveStake().call({
+    from: $store.state.accs,
+    gas: 3141592,
+  });
+  return res;
+}

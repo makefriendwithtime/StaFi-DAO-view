@@ -60,56 +60,9 @@ export default {
     };
   },
   async onLoad() {
-    // new Promise((resolve, reject) => {
-    //              if (window.ethereum) {
-    //                      const web3 = new Web3(window.ethereum);
-    //                      try {
-    //                        // Request account access if needed
-    //                        window.ethereum.enable();
-    //                        // Acccounts now exposed
-    //                        resolve(web3);
-    //                      } catch (error) {
-    //                        reject(error);
-    //                      }
-    //                    }
-    //                    // Legacy dapp browsers...
-    //                    else if (window.web3) {
-    //                      // Use Mist/MetaMask's provider.
-    //                      const web3 = window.web3;
-    //                      console.log("Injected web3 detected.");
-    //                      resolve(web3);
-    //                    }
-    //                    // Fallback to localhost; use dev console port by default...
-    //                    else {
-    //                      const provider = new Web3.providers.HttpProvider(
-    //                        "http://127.0.0.1:9545"
-    //                      );
-    //                      const web3 = new Web3(provider);
-    //                      console.log("No web3 instance injected, using Local web3.");
-    //                      resolve(web3);
-    //              }
-    // });
-    // window.web3 = new Web3(ethereum);
-    //     var web3 = window.web3;
-    //     // 请求用户授权 解决web3js无法直接唤起Meta Mask获取用户身份
-    //     const enable = await ethereum.enable();
-    //     console.log(enable,11)
+   
   },
   methods: {
-    async get() {
-      //    web3.eth.sendTransaction({
-      //        from: this.myAccount,
-      //        to: account,
-      //        value,
-      //  data:adou.abi
-      //    })
-      //    .then(function(res){
-      //        console.log(res)
-      //    }).catch(function(err){
-      //  console.log(err)
-      // });
-    },
-
     chooseNft(item) {
       this.chooseid = item.id;
       this.nftnum = item.num;
@@ -120,7 +73,7 @@ export default {
       let responseData = addStake(this.amount);
       responseData
         .then((res) => {
-          this.responseData = res;
+          // this.responseData = res;
 
           console.log(res);
         })
@@ -144,14 +97,13 @@ export default {
       });
     },
     async onShow() {
-      this.get();
-      // let responseData = getStake();
-      // responseData.then((res) => {
-      // 	this.responseData = res;
-      // 	console.log(res);
-      // }).catch((err) => {
-      // 	console.log(err);
-      // });
+      let responseData = getStake();
+      responseData.then((res) => {
+      	this.responseData = res;
+      	console.log(res);
+      }).catch((err) => {
+      	console.log(err);
+      });
 
       if (uni.getStorageSync("usertype")) {
         this.usertype = uni.getStorageSync("usertype");

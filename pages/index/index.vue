@@ -104,7 +104,9 @@
 		getBalance,
 		getTotalReward,
 		getStakeProportion,
-		getTotalStake
+		getRedeem,
+		getTotalStake,
+		// executeRedeemStake
 	} from "../../methods/index.js";
 	import Web3 from 'web3'; //ipone without card
 	export default {
@@ -241,6 +243,14 @@
 					console.log(err);
 				});
 			},
+			async getRedeem() {//查看赎回
+				let res= await getRedeem();
+				console.log(res)
+			},
+			// async executeRedeemStake(){//赎回节点抵押
+			// 	let res= await executeRedeemStake();
+			// 	console.log(res)
+			// },
 			getTotalStake() {
 				let jdzdyData = getTotalStake();
 				jdzdyData.then((res) => {
@@ -257,6 +267,8 @@
 				this.getTotalReward(),
 				this.getStakeProportion(),
 				this.getTotalStake(),
+				this.getRedeem(),
+			    // this.executeRedeemStake()
 			])
 			if (uni.getStorageSync("usertype")) {
 				this.usertype = uni.getStorageSync("usertype");
